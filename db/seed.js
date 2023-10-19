@@ -46,7 +46,7 @@ async function createTables() {
 
       CREATE TABLE posts (
         id SERIAL PRIMARY KEY,
-        "authorId" INTEGER REFERENCES users(id),
+        "authorId" INTEGER  REFERENCES users(id) ON DELETE CASCADE,
         title varchar(255) NOT NULL,
         content TEXT NOT NULL,
         active BOOLEAN DEFAULT true
@@ -58,8 +58,8 @@ async function createTables() {
       );
 
       CREATE TABLE post_tags (
-        "postId" INTEGER REFERENCES posts(id),
-        "tagId" INTEGER REFERENCES tags(id),
+        "postId" INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+        "tagId" INTEGER REFERENCES tags(id) ON DELETE CASCADE,
         UNIQUE ("postId", "tagId")
       );
     `);

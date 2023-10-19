@@ -4,7 +4,7 @@ const apiRouter = express.Router();
 
 const jwt = require('jsonwebtoken');
 const { getUserById } = require('../db');
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET='neverTell' } = process.env;
 
 // set `req.user` if possible
 apiRouter.use(async (req, res, next) => {
@@ -16,12 +16,13 @@ apiRouter.use(async (req, res, next) => {
     next();
   } else if (auth.startsWith(prefix)) {
     const token = auth.slice(prefix.length);
-
+ 
     try {
       const { id } = jwt.verify(token, JWT_SECRET);
-
+     
       if (id) {
         req.user = await getUserById(id);
+        console.log(req.user);
         next();
       } else {
         next({

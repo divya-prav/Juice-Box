@@ -8,12 +8,13 @@ const {
   getAllPosts,
   updatePost,
   getPostById,
+  deletePostById
 } = require('../db');
 
 postsRouter.get('/', async (req, res, next) => {
   try {
     const allPosts = await getAllPosts();
-
+  
     const posts = allPosts.filter(post => {
       // the post is active, doesn't matter who it belongs to
       if (post.active) {
@@ -33,22 +34,23 @@ postsRouter.get('/', async (req, res, next) => {
       posts
     });
   } catch ({ name, message }) {
+  
     next({ name, message });
   }
 });
 
-postsRouter.post('/', requireUser, async (req, res, next) => {
-  const { title, content = "" } = req.body;
+postsRouter.post('/',requireUser, async (req, res, next) => {
 
+  const { title, content = "" ,tags=[]} = req.body;
   const postData = {};
-
   try {
     postData.authorId = req.user.id;
     postData.title = title;
     postData.content = content;
-
+    postData.tags = tags;
+    
     const post = await createPost(postData);
-
+    console.log(post);
     if (post) {
       res.send(post);
     } else {
@@ -98,7 +100,13 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
 });
 
 postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
-  res.send({ message: 'under construction' });
+  try{
+    const posts = await deletePostById(req.params.postId);
+    res.send(posts);
+
+  }catch({name,message}){
+  next({name,message})
+  }
 });
 
 module.exports = postsRouter;
