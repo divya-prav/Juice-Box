@@ -6,6 +6,7 @@ const {
   getPostsByTagName
 } = require('../db');
 
+//GET /api/tags
 tagsRouter.get('/', async (req, res, next) => {
   try {
     const tags = await getAllTags();
@@ -18,6 +19,7 @@ tagsRouter.get('/', async (req, res, next) => {
   }
 });
 
+//GET /api/tags/:tagName/posts
 tagsRouter.get('/:tagName/posts', async (req, res, next) => {
   let { tagName } = req.params;
   

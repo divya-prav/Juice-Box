@@ -2,8 +2,7 @@ const { Client } = require("pg"); // imports the pg module
 
 const client = new Client({
   connectionString:
-    process.env.DATABASE_URL ||
-    "https://localhost:5432/juicebox-dev",
+    process.env.DATABASE_URL || "https://localhost:5432/juicebox-dev",
   ssl:
     process.env.NODE_ENV === "production"
       ? { rejectUnauthorized: false }
@@ -98,10 +97,9 @@ async function getUserById(userId) {
         message: "A user with that id does not exist",
       };
     }
-    
-    //user.posts = await getPostsByUser(userId);
-   // delete user.password; 
-    console.log("i m in getuserbyid "+JSON.stringify(user));
+
+    user.posts = await getPostsByUser(userId);
+
     return user;
   } catch (error) {
     throw error;
@@ -230,7 +228,7 @@ async function getAllPosts() {
 }
 
 async function getPostById(postId) {
-  console.log(postId)
+
   try {
     const {
       rows: [post],
@@ -283,18 +281,17 @@ async function getPostById(postId) {
 }
 
 async function getPostsByUser(userId) {
- 
   try {
     const { rows: postIds } = await client.query(`
       SELECT *
       FROM posts 
       WHERE "authorId"=${userId};
     `);
-   
+
     const posts = await Promise.all(
       postIds.map((post) => getPostById(post.id))
     );
-  
+
     return posts;
   } catch (error) {
     throw error;

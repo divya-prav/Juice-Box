@@ -11,6 +11,7 @@ const {
   deletePostById
 } = require('../db');
 
+//GET /api/posts
 postsRouter.get('/', async (req, res, next) => {
   try {
     const allPosts = await getAllPosts();
@@ -39,6 +40,7 @@ postsRouter.get('/', async (req, res, next) => {
   }
 });
 
+//POST api/posts
 postsRouter.post('/',requireUser, async (req, res, next) => {
 
   const { title, content = "" ,tags=[]} = req.body;
@@ -64,6 +66,7 @@ postsRouter.post('/',requireUser, async (req, res, next) => {
   }
 });
 
+//POST api/posts/:postId
 postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   const { postId } = req.params;
   const { title, content, tags } = req.body;
@@ -99,6 +102,7 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   }
 });
 
+//DELETE /api/posts/:postId
 postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
   try{
     const posts = await deletePostById(req.params.postId);
